@@ -1,36 +1,48 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>JSnUProject</title>
-  </head>
-  <body>
-    <button id="cheat">CHEAT</button>
-    <div class="starDust">
-      <button id="collectStarDust">Collect Star Dust</button>
-      &nbsp;
-      <label id="starDustCount">0</label>
-    </div>
-    <div class="planet">
-      <button id="createPlanet" style="display: none;">Create Planet</button>
-      <label id="createPlanetLabel" style="display: none;">You need 200g of star dust to do this</label>
-      <button id="growPlanet" style="display: none;">Grow Planet</button>
-      <label id="growPlanetCost" style="display: none">20g star dust</label>
-      <label id="planetSize" style="display: none;">0 km<sup>2</sup></label>
-    </div>
-    <div>
-      <button id="flood" style="display: none">Flood Planet</button>
-      <label id="floodCost" style="display: none">100g star dust</label>
-      <button id="elevateEarth" style="display: none">Elevate Earth</button>
-      <label id="elevateCost" style="display: none">10g star dust</label>
-      <button id="addResource" style="display: none">Add Resource</button>
-      <label id="resourceCost" style="display: none">10g star dust</label>
-      <label id="resourceCount" style="display: none"></label>
-      <button id="createHuman" style="display: none">Create Human</button>
-      <label id="humanCost" style="display: none">xxxxxxxx resources</label>
-      <label id="humanCount" style="display: none"></label>
-    </div>
-    <script type="text/javascript" src="bundle.js"></script>
-    <script src="http://code.jquery.com/jquery-3.2.1.js"></script>
-  </body>
+
+<head>
+  <meta charset="utf-8">
+  <title>JSnUProject</title>
+</head>
+
+<body>
+  <button id="cheat">CHEAT</button>
+  <div class="starDust">
+    <button id="collectStarDust">Collect Star Dust</button> &nbsp;
+    <label id="starDustCount">0</label>
+  </div>
+  <div class="planetDiv">
+    <button id="createPlanet" style="display: none;">Create Planet</button>
+    <label id="createPlanetLabel" style="display: none;">You need 200g of star dust to do this</label>
+    <button id="growPlanet" style="display: none;">Grow Planet</button>
+    <label id="growPlanetCost" style="display: none">20g star dust</label>
+    <label id="planetSize" style="display: none;">0 km<sup>2</sup></label>
+  </div>
+  <div class="floodDiv">
+    <button id="flood" style="display: none">Flood Planet</button>
+    <label id="floodCost" style="display: none">100g star dust</label>
+  </div>
+  <div class="earthDiv">
+    <button id="elevateEarth" style="display: none">Elevate Earth</button>
+    <label id="elevateCost" style="display: none">10g star dust</label>
+    <label id="elevatePercentage" style="display: none">0%</label>
+  </div>
+  <div class="resourceDiv">
+    <button id="addResource" style="display: none">Add Resource</button>
+    <label id="resourceCost" style="display: none">10g star dust</label>
+    <label id="resourceCount" style="display: none"></label>
+  </div>
+  <div class="humanDiv">
+    <button id="createHuman" style="display: none">Humans ++</button>
+    <label id="humanCost" style="display: none">xx resources</label>
+    <label id="humanCount" style="display: none">no label</label>
+  </div>
+
+
+  <p id="memo">nothing</p>
+  <script type="text/javascript" src="bundle.js"></script>
+  <script src="http://code.jquery.com/jquery-3.2.1.js"></script>
+</body>
+
 </html>
