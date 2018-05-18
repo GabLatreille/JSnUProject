@@ -1,88 +1,88 @@
-let starDust = {"current": 0, "total": 0, "cp": 10, "cpBool": false, "interval": 2000};
-let planet = {"size": 0, "cp1":false, "cp2": false, "cp3": false, "cp4": false};
-let floodBool = false;
+// NOTE: cp means checkpoint
+let energy = {"current": 0, "total": 0, "cp": 10, "cpBool": false, "interval": 2000};
+let universe = {"size": 0, "cp1":false, "cp2": false, "cp3": false, "cp4": false};
+let atmosphereBool = false;
 let resource = {"current": 0, "total": 0};
-const planetCheckpoint = [15, 25, 40, 60];
 let fib = []
-let clickCounter = {"growPlanet": 0, "elevateEarth": 0, "human": 0}
+let clickCounter = {"expandUniv": 0, "lanscape": 0, "human": 0}
 let humanCost = 20;
 
-// COLLECT STAR DUST
-document.getElementById("collectStarDust").addEventListener (
+
+// NOTE: COLLECT ENERGY
+document.getElementById("collectEnergy").addEventListener (
   'click', () => {
-      increaseStarDust();
+      increaseEnergy();
   }
 );
 
-function increaseStarDust() {
-  starDust.current++;
-  starDust.total++;
-  document.getElementById('starDustCount').innerHTML = starDust.current;
-  if(starDust.current >= starDust.cp && !starDust.cpBool){
-    enableElement("createPlanet", "inline");
-    enableElement("createPlanetLabel", "inline");
-    starDust.cpBool = !starDust.cpBool;
+function increaseEnergy() {
+  energy.current++;
+  energy.total++;
+  document.getElementById('energyCount').innerHTML = energy.current;
+  if(energy.current >= energy.cp && !energy.cpBool){
+    enableElement("createBB", "inline");
+    enableElement("createBBLabel", "inline");
+    energy.cpBool = !energy.cpBool;
   }
 }
 
-function decreaseStarDust(num) {
-  if(starDust.current - num >= 0){
-    starDust.current -= num;
-    document.getElementById('starDustCount').innerHTML = starDust.current;
+function decreaseEnergy(num) {
+  if(energy.current - num >= 0){
+    energy.current -= num;
+    document.getElementById('energyCount').innerHTML = energy.current;
     return true;
   }
   return false;
 }
 
 setInterval(() => {
-  increaseStarDust();
-}, starDust.interval);
+  increaseEnergy();
+}, energy.interval);
 
-
-//CREATE PLANET
-document.getElementById("createPlanet").addEventListener (
+// NOTE: CREATE BIG BANG
+document.getElementById("createBB").addEventListener (
   'click', () => {
-    if(decreaseStarDust(20)){
-      disableElement("createPlanet");
-      disableElement("createPlanetLabel");
-      enableElement("growPlanet", "inline");
-      enableElement("growPlanetCost", "inline");
-      enableElement("planetSize", "block");
+    if(decreaseEnergy(20)){
+      disableElement("createBB");
+      disableElement("createBBLabel");
+      enableElement("expandUniverse", "inline");
+      enableElement("expandUniverseCost", "inline");
+      enableElement("universeSize", "inline");
     }
   }
 );
 
-//GROW PLANET
-document.getElementById("growPlanet").addEventListener (
+// NOTE: EXPAND UNIVERSE
+document.getElementById("expandUniverse").addEventListener (
   'click', () => {
-    if(decreaseStarDust(20+10*clickCounter.growPlanet)){
-      clickCounter.growPlanet++;
-      planet.size = fibonacci(clickCounter.growPlanet, fib);
-      document.getElementById("growPlanetCost").innerHTML = `${20+10*clickCounter.growPlanet}g star dust`;
+    if(decreaseEnergy(20+10*clickCounter.expandUniv)){
+      clickCounter.expandUniv++;
+      universe.size = fibonacci(clickCounter.expandUniv, fib);
+      document.getElementById("expandUniverseCost").innerHTML = `${20+10*clickCounter.expandUniv}g energy`;
       // TODO: format number to be in format 123,456 or 123 456
-      document.getElementById("planetSize").innerHTML = `${planet.size} km${"2".sup()}`;
-      if(clickCounter.growPlanet == 15 && !planet.cp1){
-        enableElement("flood", "inline");
-        enableElement("floodCost", "inline");
-        planet.cp1 = !planet.cp1;
-      } else if(clickCounter.growPlanet >= 25 && planet.cp1 && !planet.cp2 && floodBool){
-        enableElement("elevateEarth", "inline");
-        enableElement("elevateCost", "inline");
-        enableElement("elevatePercentage", "inline");
-        planet.cp2 = !planet.cp2;
-      } else if(clickCounter.growPlanet >= 45 && planet.cp1 && planet.cp2 && !planet.cp3 && floodBool){
+      document.getElementById("universeSize").innerHTML = `${universe.size} km${"2".sup()}`;
+      if(clickCounter.expandUniv == 15 && !universe.cp1){
+        enableElement("formAtmosphere", "inline");
+        enableElement("atmosphereCost", "inline");
+        universe.cp1 = !universe.cp1;
+      } else if(clickCounter.expandUniv >= 25 && universe.cp1 && !universe.cp2 && atmosphereBool){
+        enableElement("landscaping", "inline");
+        enableElement("landscapeCost", "inline");
+        enableElement("waterPerc", "inline");
+        universe.cp2 = !universe.cp2;
+      } else if(clickCounter.expandUniv >= 45 && universe.cp1 && universe.cp2 && !universe.cp3 && atmosphereBool){
         enableElement("addResource", "inline");
         enableElement("resourceCost", "inline");
-        planet.cp3 = !planet.cp3;
-      } else if (clickCounter.growPlanet == 60 && planet.cp1 && planet.cp2 && planet.cp3 && !planet.cp4 && floodBool) {
+        universe.cp3 = !universe.cp3;
+      } else if (clickCounter.expandUniv == 60 && universe.cp1 && universe.cp2 && universe.cp3 && !universe.cp4 && atmosphereBool) {
         enableElement("createHuman", "inline");
         enableElement("humanCost", "inline");
-        planet.cp4 = !planet.cp4;
+        universe.cp4 = !universe.cp4;
       }
 
-      if(clickCounter.growPlanet == 60){
-        document.getElementById("growPlanet").disabled = true;
-        document.getElementById("growPlanetCost").innerHTML = "MAX SIZE";
+      if(clickCounter.expandUniv == 60){
+        document.getElementById("expandUniverse").disabled = true;
+        document.getElementById("expandUniverseCost").innerHTML = "MAX SIZE";
       }
     }
   }
@@ -97,55 +97,56 @@ function fibonacci(num, memo) {
 }
 
 
-//FLOOD
-document.getElementById("flood").addEventListener (
+// NOTE: FORM ATMOSPHERE
+document.getElementById("formAtmosphere").addEventListener (
   // TODO: if flood is clicked, check to see if any onther buttons should be activated
   'click', () => {
-    if(decreaseStarDust(200)){
-      if(clickCounter.growPlanet == 60){
+    if(decreaseEnergy(200)){
+      if(clickCounter.expandUniv == 60){
         enableElement("createHuman", "inline");
         enableElement("humanCost", "inline");
-      } if(clickCounter.growPlanet >= 45){
+      } if(clickCounter.expandUniv >= 45){
         enableElement("addResource", "inline");
         enableElement("resourceCost", "inline");
-      } if(clickCounter.growPlanet >= 25){
-        enableElement("elevateEarth", "inline");
-        enableElement("elevateCost", "inline");
-        enableElement("elevatePercentage", "inline");
+      } if(clickCounter.expandUniv >= 25){
+        enableElement("landscaping", "inline");
+        enableElement("landscapeCost", "inline");
+        enableElement("waterPerc", "inline");
       }
-      floodBool = true;
-      document.getElementById('memo').innerHTML = "Planet flooded";
-      document.getElementById('flood').disabled = true;
-      disableElement('floodCost');
+      atmosphereBool = true;
+      document.getElementById('memo').innerHTML = "Atmosphere Created";
+      document.getElementById('formAtmosphere').disabled = true;
+      disableElement('atmosphereCost');
     }
   }
 );
 
 
-// ELEVATE EARTH
-document.getElementById("elevateEarth").addEventListener (
+// NOTE: LANSCAPE
+document.getElementById("landscaping").addEventListener (
   'click', () => {
-    if(clickCounter.elevateEarth < 71){
-      if(decreaseStarDust(10*(clickCounter.elevateEarth+1))) {
-        clickCounter.elevateEarth++;
-        document.getElementById('elevateCost').innerHTML = `${10*(clickCounter.elevateEarth+1)}g star dust`;
-        document.getElementById('elevatePercentage').innerHTML = `${clickCounter.elevateEarth}%`;
-        if(clickCounter.elevateEarth == 71){
-          disableElement('elevateCost');
-          document.getElementById('elevateEarth').disabled = true;
+    if(clickCounter.lanscape < 71){
+      if(decreaseEnergy(10*(clickCounter.lanscape+1))) {
+        clickCounter.lanscape++;
+        document.getElementById('landscapeCost').innerHTML = `${10*(clickCounter.lanscape+1)}g energy`;
+        document.getElementById('waterPerc').innerHTML = `${clickCounter.lanscape}%`;
+        if(clickCounter.lanscape == 71){
+          disableElement('landscapeCost');
+          document.getElementById('landscaping').disabled = true;
         }
       }
     }
   }
 );
 
-// ADD HUMANS
+// NOTE: HUMANS
 document.getElementById("createHuman").addEventListener (
   'click', () => {
-    if(decreaseStarDust(humanCost*clickCounter.human)){
+    if(decreaseEnergy(humanCost*clickCounter.human)){
       clickCounter.human++;
       if(clickCounter.human == 1){
         document.getElementById('memo').innerHTML = "THE FIRST HUMANS HAVE ARRIVED FROM ANOTHER PLANET AND THEIR SHIP CRASHES AND THEY ARE LEFT WITH NOTHING BUT THEMSLEVES"
+        // TODO: allow harvest resources
       }
 
       console.log("clicked");
@@ -153,23 +154,16 @@ document.getElementById("createHuman").addEventListener (
   }
 );
 
-//CHEAT
+// NOTE: CHEAT
 document.getElementById("cheat").addEventListener (
   'click', () => {
-    starDust.current = 1000000;
-    increaseStarDust();
-    clickCounter.growPlanet = 14;
-    // enableElement("createHuman", "inline");
-    // enableElement("humanCost", "inline");
-    // enableElement("addResource", "inline");
-    // enableElement("resourceCost", "inline");
-    // enableElement("elevateEarth", "inline");
-    // enableElement("elevateCost", "inline");
+    energy.current = 1000000;
+    increaseEnergy();
+    clickCounter.expandUniv = 14;
   }
 );
 
-
-//ENABLE AND DISABLE
+// NOTE: ENABLE AND DISABLE
 function enableElement(elementID, place) {
   document.getElementById(elementID).style.display = place;
 }
