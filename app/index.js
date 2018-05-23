@@ -1,12 +1,25 @@
 // NOTE: cp means checkpoint
-let energy = {"current": 0, "total": 0, "cp": 10, "cpBool": false, "interval": 2000};
+let energy = {"count": 0, "cp": 10, "cpBool": false, "interval": 1000};
 let universe = {"size": 0, "cp1":false, "cp2": false, "cp3": false, "cp4": false};
 let atmosphereBool = false;
-let resource = {"current": 0, "total": 0};
+let resource = {"count": 0, "increment": 1, "createBool": false, "price": 100};
 let fib = []
-let clickCounter = {"expandUniv": 0, "lanscape": 0, "human": 0}
-let humanCost = 20;
+let clickCounter = {"expandUniv": 0, "lanscape": 0, "resource": 0, "human": 0}
+const humanCost = 20;
 
+// NOTE: onload
+// window.onload = () => {
+//   console.log("loading game...")
+//   try {
+//     const loadedData = JSON.parse(localStorage.getItem("save"))
+//     console.log("loading complete");
+//     if (typeof loadedData.energy !== "undefined") {
+//       energy.count = loadedData.energy;
+//     }
+//   } catch (e) {
+//     console.error(e);
+//   }
+// }
 
 // NOTE: COLLECT ENERGY
 document.getElementById("collectEnergy").addEventListener (
@@ -16,28 +29,23 @@ document.getElementById("collectEnergy").addEventListener (
 );
 
 function increaseEnergy() {
-  energy.current++;
-  energy.total++;
-  document.getElementById('energyCount').innerHTML = energy.current;
-  if(energy.current >= energy.cp && !energy.cpBool){
-    enableElement("createBB", "inline");
-    enableElement("createBBLabel", "inline");
+  energy.count++;
+  document.getElementById('energyCount').innerHTML = energy.count;
+  if(energy.count >= energy.cp && !energy.cpBool){
+    enableElement("createBB");
+    enableElement("createBBLabel");
     energy.cpBool = !energy.cpBool;
   }
 }
 
 function decreaseEnergy(num) {
-  if(energy.current - num >= 0){
-    energy.current -= num;
-    document.getElementById('energyCount').innerHTML = energy.current;
+  if(energy.count - num >= 0){
+    energy.count -= num;
+    document.getElementById('energyCount').innerHTML = energy.count;
     return true;
   }
   return false;
 }
-
-setInterval(() => {
-  increaseEnergy();
-}, energy.interval);
 
 // NOTE: CREATE BIG BANG
 document.getElementById("createBB").addEventListener (
@@ -45,9 +53,9 @@ document.getElementById("createBB").addEventListener (
     if(decreaseEnergy(20)){
       disableElement("createBB");
       disableElement("createBBLabel");
-      enableElement("expandUniverse", "inline");
-      enableElement("expandUniverseCost", "inline");
-      enableElement("universeSize", "inline");
+      enableElement("expandUniverse");
+      enableElement("expandUniverseCost");
+      enableElement("universeSize");
     }
   }
 );
@@ -62,21 +70,23 @@ document.getElementById("expandUniverse").addEventListener (
       // TODO: format number to be in format 123,456 or 123 456
       document.getElementById("universeSize").innerHTML = `${universe.size} km${"2".sup()}`;
       if(clickCounter.expandUniv == 15 && !universe.cp1){
-        enableElement("formAtmosphere", "inline");
-        enableElement("atmosphereCost", "inline");
+        enableElement("formAtmosphere");
+        enableElement("atmosphereCost");
         universe.cp1 = !universe.cp1;
       } else if(clickCounter.expandUniv >= 25 && universe.cp1 && !universe.cp2 && atmosphereBool){
-        enableElement("landscaping", "inline");
-        enableElement("landscapeCost", "inline");
-        enableElement("waterPerc", "inline");
+        enableElement("landscaping");
+        enableElement("landscapeCost");
+        enableElement("waterPerc");
         universe.cp2 = !universe.cp2;
       } else if(clickCounter.expandUniv >= 45 && universe.cp1 && universe.cp2 && !universe.cp3 && atmosphereBool){
-        enableElement("addResource", "inline");
-        enableElement("resourceCost", "inline");
+        enableElement("addResource");
+        enableElement("resourceCount");
+        enableElement("resourceCost");
         universe.cp3 = !universe.cp3;
+        resource.createBool = true;
       } else if (clickCounter.expandUniv == 60 && universe.cp1 && universe.cp2 && universe.cp3 && !universe.cp4 && atmosphereBool) {
-        enableElement("createHuman", "inline");
-        enableElement("humanCost", "inline");
+        enableElement("createHuman");
+        enableElement("humanCost");
         universe.cp4 = !universe.cp4;
       }
 
@@ -103,15 +113,17 @@ document.getElementById("formAtmosphere").addEventListener (
   'click', () => {
     if(decreaseEnergy(200)){
       if(clickCounter.expandUniv == 60){
-        enableElement("createHuman", "inline");
-        enableElement("humanCost", "inline");
+        enableElement("createHuman");
+        enableElement("humanCost");
       } if(clickCounter.expandUniv >= 45){
-        enableElement("addResource", "inline");
-        enableElement("resourceCost", "inline");
+        enableElement("addResource");
+        enableElement("resourceCost");
+        enableElement("resourceCount");
+        resource.createBool = true;
       } if(clickCounter.expandUniv >= 25){
-        enableElement("landscaping", "inline");
-        enableElement("landscapeCost", "inline");
-        enableElement("waterPerc", "inline");
+        enableElement("landscaping");
+        enableElement("landscapeCost");
+        enableElement("waterPerc");
       }
       atmosphereBool = true;
       document.getElementById('memo').innerHTML = "Atmosphere Created";
@@ -139,6 +151,18 @@ document.getElementById("landscaping").addEventListener (
   }
 );
 
+// NOTE: RESOURCES
+document.getElementById("addResource").addEventListener (
+  'click', () => {
+    if(decreaseEnergy(resource.price)){
+      clickCounter.resource++;
+      resource.increment++;
+      resource.price*=2;
+      document.getElementById('resourceCost').innerHTML = `${resource.price}J energy`
+    }
+  }
+)
+
 // NOTE: HUMANS
 document.getElementById("createHuman").addEventListener (
   'click', () => {
@@ -148,8 +172,6 @@ document.getElementById("createHuman").addEventListener (
         document.getElementById('memo').innerHTML = "THE FIRST HUMANS HAVE ARRIVED FROM ANOTHER PLANET AND THEIR SHIP CRASHES AND THEY ARE LEFT WITH NOTHING BUT THEMSLEVES"
         // TODO: allow harvest resources
       }
-
-      console.log("clicked");
     }
   }
 );
@@ -157,17 +179,45 @@ document.getElementById("createHuman").addEventListener (
 // NOTE: CHEAT
 document.getElementById("cheat").addEventListener (
   'click', () => {
-    energy.current = 1000000;
+    energy.count += 1000000;
     increaseEnergy();
     clickCounter.expandUniv = 14;
   }
 );
 
+// NOTE: SAVE
+// document.getElementById("save").addEventListener (
+//   'click', () => {
+//     saveGame();
+//   }
+// );
+//
+// function saveGame(){
+//   console.log()
+//   let save = {
+//     energy: energy.count
+//   }
+//   try {
+//     localStorage.setItem("save", JSON.stringify(save));
+//     console.log("saved")
+//   } catch (e) {
+//
+//   }
+// }
+
 // NOTE: ENABLE AND DISABLE
-function enableElement(elementID, place) {
-  document.getElementById(elementID).style.display = place;
+function enableElement(elementID) {
+  document.getElementById(elementID).style.display = "inline";
 }
 
 function disableElement(elementID) {
   document.getElementById(elementID).style.display = "none";
 }
+
+setInterval(() => {
+  increaseEnergy();
+  if(resource.createBool){
+    resource.count+=resource.increment;
+    document.getElementById('resourceCount').innerHTML = resource.count;
+  }
+}, 1000);
