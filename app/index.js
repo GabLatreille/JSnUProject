@@ -44,7 +44,7 @@ const humanCost = 20;
 let energy = new Currency("energyCount", "J", 0, 1, 1);
 let resource = new Currency("resourceCount", "N", 0, 1, 1);
 let resourceCost = 10;
-let humanCount = 0;
+let humanCount = 2;
 
 
 // NOTE: onload
@@ -197,19 +197,68 @@ document.getElementById("createHuman").addEventListener(
       clickCounter.human++;
       if (clickCounter.human == 1) {
         document.getElementById('memo').innerHTML += "</br>THE FIRST HUMANS HAVE ARRIVED FROM ANOTHER PLANET AND THEIR SHIP CRASHES AND THEY ARE LEFT WITH NOTHING BUT THEMSLEVES"
-        // TODO: allow harvest resources
+        enableElement('humanCount');
+        enableElement('harvest');
+        // you can only harvest as many resources as you have humans
+      } else {
+        humanCount = Math.ceil(humanCount*1.5);
       }
       document.getElementById('humanCost').innerHTML = `${humanCost * clickCounter.human}`
+      document.getElementById('humanCount').innerHTML = humanCount;
+      if(humanCount>=1000){
+        // TODO: activate health bar
+        // TODO: activate advance technology
+      }
     }
   }
 );
+
+// NOTE: HARVEST
+document.getElementById('harvest').addEventListener(
+  'click', ()=> {
+    
+  }
+)
+
+// NOTE: TECHNOLOGY
+document.getElementById('advTech').addEventListener(
+  'click', ()=> {
+
+  }
+)
+// wheel,
 
 // NOTE: CHEAT
 document.getElementById("cheat").addEventListener(
   'click', () => {
     energy.count += 1000000;
     energy.increase();
-    clickCounter.expandUniv = 14;
+    energy.cp[0] = true;
+    enableElement("expandUniverse");
+    enableElement("expandUniverseCost");
+    enableElement("universeSize");
+    clickCounter.expandUniverse = 60;
+    universe.size = fibonacci(clickCounter.expandUniv, fib);
+    document.getElementById("universeSize").innerHTML = `${universe.size} km${"2".sup()}`;
+    enableElement("formAtmosphere");
+    universe.cp1 = !universe.cp1;
+    enableElement("landscaping");
+    enableElement("landscapeCost");
+    enableElement("waterPerc");
+    universe.cp2 = !universe.cp2;
+    enableElement("addResource");
+    enableElement("resourceCount");
+    enableElement("resourceCost");
+    universe.cp3 = !universe.cp3;
+    resource.cp[0] = true;
+    enableElement("createHuman");
+    enableElement("humanCost");
+    universe.cp4 = !universe.cp4;
+    document.getElementById("expandUniverse").disabled = true;
+    document.getElementById("expandUniverseCost").innerHTML = "MAX SIZE";
+    atmosphereBool = true;
+    document.getElementById('memo').innerHTML += `</br>Atmosphere Created`;
+    document.getElementById('formAtmosphere').disabled = true;
   }
 );
 
@@ -248,12 +297,13 @@ setInterval(() => {
   if (resource.cp[0]) {
     resource.increase();
   }
-  if(clickCounter.human>=1){
-    if(Math.floor(Math.random()*2)==1){
+  if(clickCounter.human>1){
+    if(humanCount<=5 || Math.floor(Math.random()*4)>=1){
       humanCount++;
     } else {
-      human--;
+      humanCount--;
     }
+    document.getElementById('humanCount').innerHTML = humanCount;
   }
     // chance it on whether there are more deaths or births
 }, 1000);
