@@ -40,11 +40,20 @@ let clickCounter = {
   "resource": 0,
   "human": 0
 }
-let human = {"count": 2, "cost": 20, "harvested": 0, "cp": false}
+let human = {
+  "count": 2,
+  "cost": 20,
+  "harvested": 0,
+  "cp": false
+}
 let energy = new Currency("energyCount", "J", 0, 1, 1);
 let resource = new Currency("resourceCount", "N", 0, 1, 1);
 let resourceCost = 10;
-let timer = {"mins": 2, "secs": 0}
+let timer = {
+  "mins": 2,
+  "secs": 0
+}
+let advTechCount = 0;
 
 // NOTE: onload
 // window.onload = () => {
@@ -201,11 +210,11 @@ document.getElementById("createHuman").addEventListener(
         enableElement('harvested');
         // you can only harvest as many resources as you have humans
       } else {
-        human.count = Math.ceil(human.count**1.5);
+        human.count = Math.ceil(human.count ** 1.5);
       }
       document.getElementById('humanCost').innerHTML = `${human.cost * clickCounter.human}`
       document.getElementById('humanCount').innerHTML = human.count;
-      if(human.count>=10000000 && !human.cp){
+      if (human.count >= 10000000 && !human.cp) {
         human.cp = true;
         document.getElementById('healthBar').style.visibility = 'visible'
         enableElement('advTech');
@@ -217,8 +226,8 @@ document.getElementById("createHuman").addEventListener(
 
 // NOTE: HARVEST
 document.getElementById('harvest').addEventListener(
-  'click', ()=> {
-    if(resource.count-human.count>=0){
+  'click', () => {
+    if (resource.count - human.count >= 0) {
       human.harvested += human.count;
       resource.count -= human.count;
     } else {
@@ -232,15 +241,74 @@ document.getElementById('harvest').addEventListener(
 
 // NOTE: TECHNOLOGY
 document.getElementById('advTech').addEventListener(
-  'click', ()=> {
-
+  'click', () => {
+    if (human.harvested-(30+advTechCount*10)>=0) {
+      human.harvested -= (30+advTechCount*10)
+      advTechCount++;
+      document.getElementById('techCost').innerHTML = `${30+advTechCount*10}`
+      document.getElementById('harvested').innerHTML = `${human.harvested}`
+      switch (advTechCount) {
+        case 1:
+          document.getElementById('memo').innerHTML += "<br>You have created the wheel"
+          break;
+        case 2:
+          document.getElementById('memo').innerHTML += "<br>You have create the nail"
+          break;
+        case 3:
+          document.getElementById('memo').innerHTML += "<br>You have create the compass"
+          break;
+        case 4:
+          document.getElementById('memo').innerHTML += "<br>You have create paper"
+          break;
+        case 5:
+          document.getElementById('memo').innerHTML += "<br>You have create gunpowder"
+          break;
+        case 6:
+          document.getElementById('memo').innerHTML += "<br>You have create electricity"
+          break;
+        case 7:
+          document.getElementById('memo').innerHTML += "<br>You have create the steam engine"
+          break;
+        case 8:
+          document.getElementById('memo').innerHTML += "<br>You have create combustion engine"
+          break;
+        case 9:
+          document.getElementById('memo').innerHTML += "<br>You have create the telephone"
+          break;
+        case 10:
+          document.getElementById('memo').innerHTML += "<br>You have create the car"
+          break;
+        case 11:
+          document.getElementById('memo').innerHTML += "<br>You have create airplanes"
+          break;
+        case 12:
+          document.getElementById('memo').innerHTML += "<br>You have create rockets"
+          break;
+        case 13:
+          document.getElementById('memo').innerHTML += "<br>You have create nuclear fission"
+          break;
+        case 14:
+          document.getElementById('memo').innerHTML += "<br>You have create the computer"
+          break;
+        case 15:
+          document.getElementById('memo').innerHTML += "<br>You have create the internet"
+          break;
+        case 16:
+          document.getElementById('memo').innerHTML += "<br>The first space exploration has been launched: Rover 1"
+          break;
+        case 17:
+          document.getElementById('memo').innerHTML += "<br>Rover 1 has found a habitable planet"
+          break;
+        case 18:
+          document.getElementById('memo').innerHTML += "<br>You have built the first passenger space ship"
+          break;
+        case 19:
+          document.getElementById('memo').innerHTML += "<br>You can now succesfully move to the new planet"
+          break;
+      }
+    }
   }
 )
-// fire, wheel, nails, compass, paper, gunpowder, electricity,
-// steam engine, combustion engine, telephone, car, airplane,
-// rockets, nuclear fission, computers, the internet,
-// the first space exploration to space is launched
-// it finds a habitable planet
 
 // NOTE: CHEAT
 document.getElementById("cheat").addEventListener(
@@ -273,6 +341,8 @@ document.getElementById("cheat").addEventListener(
     atmosphereBool = true;
     document.getElementById('memo').innerHTML += `</br>Atmosphere Created`;
     document.getElementById('formAtmosphere').disabled = true;
+    human.cp = true
+    document.getElementById('healthBar').style.visibility = 'visible'
   }
 );
 
@@ -305,25 +375,34 @@ function disableElement(elementID) {
   document.getElementById(elementID).style.display = "none";
 }
 
+// NOTE: WIN OR LOSE
+function win(status){
+  disableElement('all')
+  if(status)
+    document.getElementById('memo').innerHTML = 'YOU WIN!!!'
+  else
+    document.getElementById('memo').innerHTML = 'you lose...'
+}
+
 // NOTE: 1 second interval
 setInterval(() => {
   energy.increase();
   if (resource.cp[0]) {
     resource.increase();
   }
-  if(clickCounter.human>1){
+  if (clickCounter.human > 1) {
     // chance it on whether there are more deaths or births
-    if(human.count<=5 || Math.floor(Math.random()*4)>=1){
+    if (human.count <= 5 || Math.floor(Math.random() * 4) >= 1) {
       human.count++;
     } else {
       human.count--;
     }
     document.getElementById('humanCount').innerHTML = human.count;
   }
-  if(human.cp){
+  if (human.cp) {
     document.getElementById('healthBar').style.width = `${parseInt(document.getElementById('healthBar').style.width)-1}pt`
-    if(document.getElementById('healthBar').style.width=="0pt"){
-      console.log("finished");
+    if (document.getElementById('healthBar').style.width == "0pt") {
+      win(false);
     }
   }
 }, 1000);

@@ -8,52 +8,53 @@
 </head>
 
 <body>
-  <button id="cheat">CHEAT</button>
-  <!-- <button id="save">SAVE</button> -->
-  <div class="energy">
-    <button id="collectEnergy">Collect Energy</button> &nbsp;
-    <label id="energyCount">0</label>
-  </div>
-  <div class="planetDiv">
-    <button id="createBB" style="display: none;">Create BB</button>
-    <label id="createBBLabel" style="display: none;">You need 200J of energy to do this</label>
-    <button id="expandUniverse" style="display: none;">Expand Universe</button>
-    <label id="expandUniverseCost" style="display: none">20J energy</label>
-  </br>
-    <label id="universeSize" style="display: none;">0 km<sup>2</sup></label>
-  </div>
-  <div class="atmosphereDiv">
-    <button id="formAtmosphere" style="display: none">Form Atmosphere</button>
-    <label id="atmosphereCost" style="display: none">100J energy</label>
-  </div>
-  <div class="landscapeDiv">
-    <button id="landscaping" style="display: none">Lanscape</button>
-    <label id="landscapeCost" style="display: none">10J energy</label>
-    <label id="waterPerc" style="display: none">0%</label>
-  </div>
-  <div class="resourceDiv">
-    <button id="addResource" style="display: none">Increase Resource Production</button>
-    <label id="resourceCost" style="display: none">10J energy</label>
-    <label id="resourceCount" style="display: none">0</label>
-  </div>
-  <div class="humanDiv">
-    <button id="createHuman" style="display: none">Humans ++</button>
-    <label id="humanCost" style="display: none">0</label>
-    <label id="humanCount" style="display: none">2</label>
-  </div>
-  <div class="harvestResources">
-    <button id="harvest" style="display: none">Harvest Resources</button>
-    <label id="harvested" style="display: none">0</label>
-  </div>
-  <div class="technology">
-    <button id="advTech" style="display: none">Advance Technology</button>
-    <label id="techCost" style="display: none"> </label>
-  </div>
-  <div id="healthBar" style="width: 100pt; visibility: hidden;"></div>
-<!-- humans have taken over the planet and the planet has satrted to die
+  <div id='all'>
+    <button id="cheat">CHEAT</button>
+    <!-- <button id="save">SAVE</button> -->
+    <div class="energy">
+      <button id="collectEnergy">Collect Energy</button> &nbsp;
+      <label id="energyCount">0</label>
+    </div>
+    <div class="planetDiv">
+      <button id="createBB" style="display: none;">Create BB</button>
+      <label id="createBBLabel" style="display: none;">You need 200J of energy to do this</label>
+      <button id="expandUniverse" style="display: none;">Expand Universe</button>
+      <label id="expandUniverseCost" style="display: none">20J energy</label>
+      </br>
+      <label id="universeSize" style="display: none;">0 km<sup>2</sup></label>
+    </div>
+    <div class="atmosphereDiv">
+      <button id="formAtmosphere" style="display: none">Form Atmosphere</button>
+      <label id="atmosphereCost" style="display: none">100J energy</label>
+    </div>
+    <div class="landscapeDiv">
+      <button id="landscaping" style="display: none">Lanscape</button>
+      <label id="landscapeCost" style="display: none">10J energy</label>
+      <label id="waterPerc" style="display: none">0%</label>
+    </div>
+    <div class="resourceDiv">
+      <button id="addResource" style="display: none">Increase Resource Production</button>
+      <label id="resourceCost" style="display: none">10J energy</label>
+      <label id="resourceCount" style="display: none">0</label>
+    </div>
+    <div class="humanDiv">
+      <button id="createHuman" style="display: none">Humans ++</button>
+      <label id="humanCost" style="display: none">0</label>
+      <label id="humanCount" style="display: none">2</label>
+    </div>
+    <div class="harvestResources">
+      <button id="harvest" style="display: none">Harvest Resources</button>
+      <label id="harvested" style="display: none">0</label>
+    </div>
+    <div class="technology">
+      <button id="advTech" style="display: none">Advance Technology</button>
+      <label id="techCost" style="display: none">30</label>
+    </div>
+    <div id="healthBar" style="width: 5pt; visibility: hidden;"></div>
+    <!-- humans have taken over the planet and the planet has satrted to die
 you need to hurry up and collect resources to advance technology to get as many
 people off of the planet as possible-->
-
+  </div>
   <p id="memo">Welcome</p>
   <script type="text/javascript" src="bundle.js"></script>
   <script src="http://code.jquery.com/jquery-3.2.1.js"></script>
