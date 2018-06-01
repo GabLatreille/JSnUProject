@@ -50,52 +50,108 @@ let human = {
 let energy = new Currency("energyCount", "J", 0, 1, 1);
 let resource = new Currency("resourceCount", "R", 0, 1, 1);
 let resourceCost = 10;
-let timer = {
-  "mins": 2,
-  "secs": 0
-}
-let advTechCount = 0;
 let memos = ['Welcome', '', '', '', '', '', '', '', '', '']
 let technology = ['the wheel', 'the nail', 'the compass', 'paper', 'gunpowder', 'electricity', 'the steam engine', 'the combustion engine', 'the telephone', 'the car', 'rockets', 'nuclear fission', 'the computer', 'the internet']
+let bbCp = false
+
 // NOTE: onload
-// window.onload = () => {
-//   console.log("loading game...")
-//   try {
-//     const loadedData = JSON.parse(localStorage.getItem("save"))
-//     console.log("loading complete");
-//     if (typeof loadedData.energy !== "undefined") {
-//       energy.count = loadedData.energy;
-//     }
-//   } catch (e) {
-//     console.error(e);
-//   }
-// }
+window.onload = () => {
+  console.log("loading...");
+  try {
+    const loadedData = JSON.parse(localStorage.getItem("save"))
+    console.log("loading complete");
+    if (typeof loadedData.energyCount !== "undefined") {
+      energy.count = loadedData.energyCount;
+    }
+    if (typeof loadedData.energyCp !== "undefined") {
+      energy.cp = loadedData.energyCp;
+      if (energy.cp[0]) {
+        enableElement("createBB");
+        enableElement("createBBLabel");
+      }
+    }
+    if (typeof loadedData.resourceCount !== "undefined") {
+      resource.count = loadedData.resourceCount
+    }
+    if (typeof loadedData.resourceCp !== "undefined") {
+      resource.cp = loadedData.resourceCp
+    }
+    if (typeof loadedData.universeSize !== "undefined") {
+      universe.size = loadedData.universeSize
+    }
+    if (typeof loadedData.bbCp !== "undefined") {
+      bbCp = loadedData.bbCp
+      if (bbCp) {
+        createBB();
+      }
+    }
+    if (typeof loadedData.atmosphereBool !== "undefined") {
+      atmosphereBool = loadedData.atmosphereBool
+    }
+    if (typeof loadedData.clickCounter !== "undefined") {
+      clickCounter = loadedData.clickCounter
+      expandUniverse();
+      if (atmosphereBool) formAtmosphere();
+      landscape();
+      document.getElementById('techCost').innerHTML = `${30+clickCounter.advTech*10}H`
+    }
+    if (typeof loadedData.resourceCost !== "undefined") {
+      resourceCost = loadedData.resourceCost
+      document.getElementById('resourceCost').innerHTML = `${resourceCost}J`
+    }
+    if (typeof loadedData.human !== "undefined") {
+      human = loadedData.human
+      if(clickCounter.human >= 1){
+        enableElement('phumanCount');
+        enableElement('harvest');
+        enableElement('pharvested');
+      }
+      createHuman()
+      if(human.cp) tenMillionHumans();
+      document.getElementById('harvested').innerHTML = `${human.harvested}H`;
+    }
+    if (typeof loadedData.healthBar !== "undefined") {
+      document.getElementById('healthBar').style.width = `${loadedData.healthBar}pt`
+    }
+  } catch (e) {
+    console.error(e);
+  }
+}
 
 // NOTE: COLLECT ENERGY
 document.getElementById("collectEnergy").addEventListener(
   'click', () => {
-    energy.increase();
-    if (energy.count >= 10 && !energy.cp[0]) {
-      enableElement("createBB");
-      enableElement("createBBLabel");
-      energy.cp[0] = true;
-    }
+    collectEnergy();
   }
 )
+
+function collectEnergy() {
+  energy.increase();
+  if (energy.count >= 10 && !energy.cp[0]) {
+    enableElement("createBB");
+    enableElement("createBBLabel");
+    energy.cp[0] = true;
+  }
+}
 
 // NOTE: CREATE BIG BANG
 document.getElementById("createBB").addEventListener(
   'click', () => {
-    if (energy.decrease(20)) {
-      disableElement("createBB");
-      disableElement("createBBLabel");
-      enableElement("expandUniverse");
-      enableElement("expandUniverseCost");
-      enableElement("puniverseSize");
+    if (energy.decrease(200)) {
+      createBB()
+      bbCp = true
       memo('Big bang created')
     }
   }
 );
+
+function createBB() {
+  disableElement("createBB");
+  disableElement("createBBLabel");
+  enableElement("expandUniverse");
+  enableElement("expandUniverseCost");
+  enableElement("puniverseSize");
+}
 
 // NOTE: EXPAND UNIVERSE
 document.getElementById("expandUniverse").addEventListener(
@@ -103,38 +159,45 @@ document.getElementById("expandUniverse").addEventListener(
     if (energy.decrease(20 + 10 * clickCounter.expandUniv)) {
       clickCounter.expandUniv++;
       universe.size = fibonacci(clickCounter.expandUniv, fib);
-      document.getElementById("expandUniverseCost").innerHTML = `${20+10*clickCounter.expandUniv}J`;
-      document.getElementById("universeSize").innerHTML = `${universe.size} billion light years`;
       memo('The universe is ' + universe.size + ' billion light years large')
-      if (clickCounter.expandUniv == 15 && !universe.cp1) {
-        enableElement("formAtmosphere");
-        enableElement("atmosphereCost");
-        universe.cp1 = !universe.cp1;
-      } else if (clickCounter.expandUniv >= 25 && universe.cp1 && !universe.cp2 && atmosphereBool) {
-        enableElement("landscaping");
-        enableElement("landscapeCost");
-        enableElement("pwaterPerc");
-        universe.cp2 = !universe.cp2;
-      } else if (clickCounter.expandUniv >= 45 && universe.cp1 && universe.cp2 && !universe.cp3 && atmosphereBool) {
-        enableElement("addResource");
-        enableElement("presourceCount");
-        enableElement("resourceCost");
-        universe.cp3 = !universe.cp3;
-        resource.cp[0] = true;
-      } else if (clickCounter.expandUniv == 60 && universe.cp1 && universe.cp2 && universe.cp3 && !universe.cp4 && atmosphereBool) {
-        enableElement("createHuman");
-        enableElement("humanCost");
-        universe.cp4 = !universe.cp4;
-      }
-
-      if (clickCounter.expandUniv == 60) {
-        memo("Let's put a pause on the universe expansion")
-        document.getElementById("expandUniverse").disabled = true;
-        document.getElementById("expandUniverseCost").innerHTML = "MAX SIZE";
-      }
+      expandUniverse();
     }
   }
 );
+
+function expandUniverse() {
+  document.getElementById("expandUniverseCost").innerHTML = `${20+10*clickCounter.expandUniv}J`;
+  document.getElementById("universeSize").innerHTML = `${universe.size} billion light years`;
+  if (clickCounter.expandUniv >= 15 && !universe.cp1) {
+    enableElement("formAtmosphere");
+    enableElement("atmosphereCost");
+    universe.cp1 = !universe.cp1;
+  }
+  if (clickCounter.expandUniv >= 25 && universe.cp1 && !universe.cp2 && atmosphereBool) {
+    enableElement("landscaping");
+    enableElement("landscapeCost");
+    enableElement("pwaterPerc");
+    universe.cp2 = !universe.cp2;
+  }
+  if (clickCounter.expandUniv >= 45 && universe.cp1 && universe.cp2 && !universe.cp3 && atmosphereBool) {
+    enableElement("addResource");
+    enableElement("presourceCount");
+    enableElement("resourceCost");
+    universe.cp3 = !universe.cp3;
+    resource.cp[0] = true;
+  }
+  if (clickCounter.expandUniv == 60 && universe.cp1 && universe.cp2 && universe.cp3 && !universe.cp4 && atmosphereBool) {
+    enableElement("createHuman");
+    enableElement("humanCost");
+    universe.cp4 = !universe.cp4;
+  }
+
+  if (clickCounter.expandUniv == 60) {
+    memo("Let's put a pause on the universe expansion")
+    document.getElementById("expandUniverse").disabled = true;
+    document.getElementById("expandUniverseCost").innerHTML = "MAX SIZE";
+  }
+}
 
 // https://medium.com/developers-writing/fibonacci-sequence-algorithm-in-javascript-b253dc7e320e
 function fibonacci(num, fibon) {
@@ -149,30 +212,38 @@ function fibonacci(num, fibon) {
 document.getElementById("formAtmosphere").addEventListener(
   'click', () => {
     if (energy.decrease(200)) {
-      if (clickCounter.expandUniv == 60) {
-        enableElement("createHuman");
-        enableElement("humanCost");
-        universe.cp4 = !universe.cp4;
-      }
-      if (clickCounter.expandUniv >= 45) {
-        enableElement("addResource");
-        enableElement("resourceCost");
-        enableElement("presourceCount");
-        resource.cp[0] = true;
-      }
-      if (clickCounter.expandUniv >= 25) {
-        enableElement("landscaping");
-        enableElement("landscapeCost");
-        enableElement("pwaterPerc");
-        universe.cp2 = !universe.cp2;
-      }
-      atmosphereBool = true;
+      formAtmosphere();
       memo("The atmosphere was created on a planet");
-      document.getElementById('formAtmosphere').disabled = true;
-      disableElement('atmosphereCost');
     }
   }
 );
+
+// function formAtmosphere() {
+//
+// }
+
+function formAtmosphere() {
+  if (clickCounter.expandUniv == 60) {
+    enableElement("createHuman");
+    enableElement("humanCost");
+    universe.cp4 = !universe.cp4;
+  }
+  if (clickCounter.expandUniv >= 45) {
+    enableElement("addResource");
+    enableElement("resourceCost");
+    enableElement("presourceCount");
+    resource.cp[0] = true;
+  }
+  if (clickCounter.expandUniv >= 25) {
+    enableElement("landscaping");
+    enableElement("landscapeCost");
+    enableElement("pwaterPerc");
+    universe.cp2 = !universe.cp2;
+  }
+  atmosphereBool = true;
+  document.getElementById('formAtmosphere').disabled = true;
+  disableElement('atmosphereCost');
+}
 
 // NOTE: LANSCAPE
 document.getElementById("landscaping").addEventListener(
@@ -180,30 +251,39 @@ document.getElementById("landscaping").addEventListener(
     if (clickCounter.lanscape < 71) {
       if (energy.decrease(10 * (clickCounter.lanscape + 1))) {
         clickCounter.lanscape++;
-        document.getElementById('landscapeCost').innerHTML = `${10*(clickCounter.lanscape+1)}J`;
-        document.getElementById('waterPerc').innerHTML = `${clickCounter.lanscape}%`;
+        landscape();
         memo('The planet is ' + clickCounter.lanscape + '% covered in water')
-        if (clickCounter.lanscape == 71) {
-          disableElement('landscapeCost');
-          document.getElementById('landscaping').disabled = true;
-          memo("Wow there mate. Let's not drown the planet")
-        }
       }
     }
   }
 );
 
+function landscape() {
+  document.getElementById('landscapeCost').innerHTML = `${10*(clickCounter.lanscape+1)}J`;
+  document.getElementById('waterPerc').innerHTML = `${clickCounter.lanscape}%`;
+  if (clickCounter.lanscape == 71) {
+    disableElement('landscapeCost');
+    document.getElementById('landscaping').disabled = true;
+    memo("Wow there mate. Let's not drown the planet")
+  }
+
+}
+
 // NOTE: RESOURCES
 document.getElementById("addResource").addEventListener(
   'click', () => {
-    if (energy.decrease(resourceCost)) {
-      clickCounter.resource++;
-      resource.increment++;
-      resourceCost *= 2;
-      document.getElementById('resourceCost').innerHTML = `${resourceCost}J`
-    }
+    addResource();
   }
 )
+
+function addResource() {
+  if (energy.decrease(resourceCost)) {
+    clickCounter.resource++;
+    resource.increment++;
+    resourceCost *= 2;
+    document.getElementById('resourceCost').innerHTML = `${resourceCost}J`
+  }
+}
 
 // NOTE: HUMANS
 document.getElementById("createHuman").addEventListener(
@@ -219,89 +299,118 @@ document.getElementById("createHuman").addEventListener(
       } else {
         human.count = Math.ceil(human.count ** 1.5);
       }
-      document.getElementById('humanCost').innerHTML = `${human.cost * clickCounter.human}R`
-      document.getElementById('humanCount').innerHTML = human.count;
-      if (human.count >= 10000000 && !human.cp) {
-        memo('Humans have taken over the planet and it has started dying. Get them out before the planet dies. Be quick')
-        human.cp = true;
-        document.getElementById('healthBar').style.visibility = 'visible'
-        enableElement('advTech');
-        enableElement('techCost');
-      }
+      createHuman();
     }
   }
 );
 
+function createHuman() {
+  document.getElementById('humanCost').innerHTML = `${human.cost * clickCounter.human}R`
+  document.getElementById('humanCount').innerHTML = human.count;
+  if (human.count >= 10000000 && !human.cp) {
+    memo('Humans have taken over the planet and it has started dying. Get them out before the planet dies. Be quick')
+    tenMillionHumans();
+    human.cp = true;
+  }
+}
+
+function tenMillionHumans() {
+  document.getElementById('healthBar').style.visibility = 'visible'
+  enableElement('advTech');
+  enableElement('techCost');
+}
+
 // NOTE: HARVEST
 document.getElementById('harvest').addEventListener(
   'click', () => {
-    if (resource.count - human.count >= 0) {
-      human.harvested += human.count;
-      resource.count -= human.count;
-    } else {
-      human.harvested += resource.count;
-      resource.count = 0;
-    }
-    memo('The humans have harvested resources')
-    document.getElementById('harvested').innerHTML = `${human.harvested}H`;
-    document.getElementById('resourceCount').innerHTML = resource.count;
+    harvest();
   }
 )
+
+function harvest() {
+  if (resource.count - human.count >= 0) {
+    human.harvested += human.count;
+    resource.count -= human.count;
+  } else {
+    human.harvested += resource.count;
+    resource.count = 0;
+  }
+  memo('The humans have harvested resources')
+  document.getElementById('harvested').innerHTML = `${human.harvested}H`;
+  document.getElementById('resourceCount').innerHTML = resource.count;
+}
 
 // NOTE: TECHNOLOGY
 document.getElementById('advTech').addEventListener(
   'click', () => {
-    if (human.harvested - (30 + clickCounter.advTech * 10) >= 0) {
-      human.harvested -= (30 + clickCounter.advTech * 10)
-      if (clickCounter.advTech < 14) {
-        memo('You have created ' + technology[clickCounter.advTech])
-      } else if (clickCounter.advTech == 14) {
-        memo('The first space exploration has been launched: Rover 1')
-      } else if (clickCounter.advTech == 15) {
-        memo('Rover 1 has found a habitable planet')
-      } else if (clickCounter.advTech == 16) {
-        memo('You have built the first passenger space ship')
-      } else {
-        win(true)
-      }
-      clickCounter.advTech++;
-      document.getElementById('techCost').innerHTML = `${30+clickCounter.advTech*10}H`
-      document.getElementById('harvested').innerHTML = `${human.harvested}`
-    }
+    advTech();
   }
 )
+
+function advTech() {
+  if (human.harvested - (30 + clickCounter.advTech * 10) >= 0) {
+    human.harvested -= (30 + clickCounter.advTech * 10)
+    if (clickCounter.advTech < 14) {
+      memo('You have created ' + technology[clickCounter.advTech])
+    } else if (clickCounter.advTech == 14) {
+      memo('The first space exploration has been launched: Rover 1')
+    } else if (clickCounter.advTech == 15) {
+      memo('Rover 1 has found a habitable planet')
+    } else if (clickCounter.advTech == 16) {
+      memo('You have built the first passenger space ship')
+    } else {
+      win(true)
+    }
+    clickCounter.advTech++;
+    document.getElementById('techCost').innerHTML = `${30+clickCounter.advTech*10}H`
+    document.getElementById('harvested').innerHTML = `${human.harvested}H`
+  }
+}
 
 // NOTE: CHEAT
 document.getElementById("cheat").addEventListener(
   'click', () => {
-    energy.count += 1000000;
-    document.getElementById('energyCount').innerHTML = energy.count
-    if (resource.cp[0]) {
+    let cheatCode = prompt('Enter a cheat code');
+    console.log(cheatCode);
+    if(cheatCode == 'E'){
+      energy.count += 1000000;
+      document.getElementById('energyCount').innerHTML = `${energy.count}J`
+    } else if (cheatCode=='R' && resource.cp[0]){
       resource.count += 1000000;
-      document.getElementById('resourceCount').innerHTML = resource.count
+      document.getElementById('resourceCount').innerHTML = `${resource.count}R`
     }
   }
 )
 
 // NOTE: SAVE
-// document.getElementById("save").addEventListener (
-//   'click', () => {
-//     saveGame();
-//   }
-// );
-//
-// function saveGame(){
-//   console.log()
-//   let save = {
-//     energy: energy.count
-//   }
-//   try {
-//     localStorage.setItem("save", JSON.stringify(save));
-//     console.log("saved")
-//   } catch (e) {
-//
-//   }
-// }
+document.getElementById("save").addEventListener(
+  'click', () => {
+    saveGame();
+  }
+);
+
+function saveGame() {
+  console.log("attempting to save")
+  let save = {
+    energyCount: energy.count,
+    energyCp: energy.cp,
+    resourceCount: resource.count,
+    resourceCp: resource.cp,
+    universeSize: universe.size,
+    bbCp: bbCp,
+    clickCounter: clickCounter,
+    atmosphereBool: atmosphereBool,
+    resourceCost: resourceCost,
+    human: human,
+    healthBar: parseInt(document.getElementById('healthBar').style.width)
+  }
+  try {
+    localStorage.setItem("save", JSON.stringify(save));
+    console.log("saved")
+  } catch (e) {
+    console.error(e);
+  }
+}
 
 
 // NOTE: ENABLE AND DISABLE
@@ -316,13 +425,29 @@ function disableElement(elementID) {
 // NOTE: WIN OR LOSE
 function win(status) {
   disableElement('all')
-  if (status) {
-    document.getElementById('memo').innerHTML = 'You can now succesfully move to the new planet<br>YOU WIN!!!'
-  } else {
-    document.getElementById('memo').innerHTML = 'you lose...'
-  }
+  document.getElementById('memo').innerHTML = status ? 'You can now succesfully move to the new planet<br>YOU WIN!!!' : 'you lose...'
+  document.getElementById('finish').innerHTML = status ? 'YEAH' : 'try again?'
+  enableElement('finish')
 }
 
+// NOTE: RESET
+document.getElementById("reset").addEventListener(
+  'click', () => {
+    reset();
+  }
+);
+
+document.getElementById("finish").addEventListener(
+  'click', () => {
+    reset();
+  }
+);
+
+function reset() {
+  let save = {}
+  localStorage.setItem("save", JSON.stringify(save));
+  location.reload();
+}
 
 // NOTE: BOTTOM MEMOS
 function memo(message) {
