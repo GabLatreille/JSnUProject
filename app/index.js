@@ -218,10 +218,6 @@ document.getElementById("formAtmosphere").addEventListener(
   }
 );
 
-// function formAtmosphere() {
-//
-// }
-
 function formAtmosphere() {
   if (clickCounter.expandUniv == 60) {
     enableElement("createHuman");
@@ -320,7 +316,7 @@ function tenMillionHumans() {
   enableElement('techCost');
 }
 
-// NOTE: HARVEST
+// NOTE: HARVEST resrouces
 document.getElementById('harvest').addEventListener(
   'click', () => {
     harvest();
@@ -328,6 +324,7 @@ document.getElementById('harvest').addEventListener(
 )
 
 function harvest() {
+  // you can only harvest as many resources as you have humans
   if (resource.count - human.count >= 0) {
     human.harvested += human.count;
     resource.count -= human.count;
@@ -340,7 +337,7 @@ function harvest() {
   document.getElementById('resourceCount').innerHTML = resource.count;
 }
 
-// NOTE: TECHNOLOGY
+// NOTE: TECHNOLOGY advancements
 document.getElementById('advTech').addEventListener(
   'click', () => {
     advTech();
@@ -367,7 +364,7 @@ function advTech() {
   }
 }
 
-// NOTE: CHEAT
+// NOTE: CHEAT codes
 document.getElementById("cheat").addEventListener(
   'click', () => {
     let cheatCode = prompt('Enter a cheat code');
@@ -382,7 +379,7 @@ document.getElementById("cheat").addEventListener(
   }
 )
 
-// NOTE: SAVE
+// NOTE: SAVE THE GAME
 document.getElementById("save").addEventListener(
   'click', () => {
     saveGame();
@@ -413,7 +410,7 @@ function saveGame() {
 }
 
 
-// NOTE: ENABLE AND DISABLE
+// NOTE: ENABLE AND DISABLE elements
 function enableElement(elementID) {
   document.getElementById(elementID).style.display = "inline";
 }
@@ -422,7 +419,7 @@ function disableElement(elementID) {
   document.getElementById(elementID).style.display = "none";
 }
 
-// NOTE: WIN OR LOSE
+// NOTE: WIN OR LOSE message
 function win(status) {
   disableElement('all')
   document.getElementById('memo').innerHTML = status ? 'You can now succesfully move to the new planet<br>YOU WIN!!!' : 'you lose...'
@@ -430,7 +427,7 @@ function win(status) {
   enableElement('finish')
 }
 
-// NOTE: RESET
+// NOTE: RESET everything to 0
 document.getElementById("reset").addEventListener(
   'click', () => {
     reset();
@@ -462,7 +459,7 @@ function memo(message) {
   document.getElementById('memo').innerHTML = str
 }
 
-// NOTE: 1 second interval
+// NOTE: 1 second interval that increments all things
 setInterval(() => {
   energy.increase();
   if (resource.cp[0]) {
