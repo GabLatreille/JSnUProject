@@ -273,9 +273,6 @@ document.getElementById("cheat").addEventListener(
     atmosphereBool = true;
     document.getElementById('memo').innerHTML += `</br>Atmosphere Created`;
     document.getElementById('formAtmosphere').disabled = true;
-    // human.cp = true
-    // document.getElementById('healthBar').style.visibility = 'visible'
-    // enableElement('healthBar')
   }
 );
 
