@@ -105,7 +105,7 @@ document.getElementById("expandUniverse").addEventListener(
       universe.size = fibonacci(clickCounter.expandUniv, fib);
       document.getElementById("expandUniverseCost").innerHTML = `${20+10*clickCounter.expandUniv}J`;
       document.getElementById("universeSize").innerHTML = `${universe.size} billion light years`;
-      memo('The universe is '+universe.size+' billion light years large')
+      memo('The universe is ' + universe.size + ' billion light years large')
       if (clickCounter.expandUniv == 15 && !universe.cp1) {
         enableElement("formAtmosphere");
         enableElement("atmosphereCost");
@@ -182,7 +182,7 @@ document.getElementById("landscaping").addEventListener(
         clickCounter.lanscape++;
         document.getElementById('landscapeCost').innerHTML = `${10*(clickCounter.lanscape+1)}J`;
         document.getElementById('waterPerc').innerHTML = `${clickCounter.lanscape}%`;
-        memo('The planet is '+clickCounter.lanscape+'% covered in water')
+        memo('The planet is ' + clickCounter.lanscape + '% covered in water')
         if (clickCounter.lanscape == 71) {
           disableElement('landscapeCost');
           document.getElementById('landscaping').disabled = true;
@@ -253,13 +253,13 @@ document.getElementById('advTech').addEventListener(
   'click', () => {
     if (human.harvested - (30 + clickCounter.advTech * 10) >= 0) {
       human.harvested -= (30 + clickCounter.advTech * 10)
-      if(clickCounter.advTech<14){
-        memo('You have created '+technology[clickCounter.advTech])
-      } else if(clickCounter.advTech==14){
+      if (clickCounter.advTech < 14) {
+        memo('You have created ' + technology[clickCounter.advTech])
+      } else if (clickCounter.advTech == 14) {
         memo('The first space exploration has been launched: Rover 1')
-      } else if(clickCounter.advTech==15) {
+      } else if (clickCounter.advTech == 15) {
         memo('Rover 1 has found a habitable planet')
-      } else if(clickCounter.advTech==16) {
+      } else if (clickCounter.advTech == 16) {
         memo('You have built the first passenger space ship')
       } else {
         win(true)
@@ -316,9 +316,9 @@ function disableElement(elementID) {
 // NOTE: WIN OR LOSE
 function win(status) {
   disableElement('all')
-  if (status){
+  if (status) {
     document.getElementById('memo').innerHTML = 'You can now succesfully move to the new planet<br>YOU WIN!!!'
-  }else{
+  } else {
     document.getElementById('memo').innerHTML = 'you lose...'
   }
 }
@@ -326,13 +326,13 @@ function win(status) {
 
 // NOTE: BOTTOM MEMOS
 function memo(message) {
-  for(let i=9; i>0; i--){
-    memos[i] = memos[i-1]
+  for (let i = 9; i > 0; i--) {
+    memos[i] = memos[i - 1]
   }
   memos[0] = message
   let str = ''
-  for(let i=0; i<10;i++){
-    str+=`<br>${memos[i]}`
+  for (let i = 0; i < 10; i++) {
+    str += `<br>${memos[i]}`
   }
   document.getElementById('memo').innerHTML = str
 }
