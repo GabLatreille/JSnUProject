@@ -44,7 +44,7 @@ let human = {"count": 2, "cost": 20, "harvested": 0, "cp": false}
 let energy = new Currency("energyCount", "J", 0, 1, 1);
 let resource = new Currency("resourceCount", "N", 0, 1, 1);
 let resourceCost = 10;
-let timer = {"mins": 5, "secs": 0}
+let timer = {"mins": 2, "secs": 0}
 
 // NOTE: onload
 // window.onload = () => {
@@ -206,11 +206,10 @@ document.getElementById("createHuman").addEventListener(
       document.getElementById('humanCost').innerHTML = `${human.cost * clickCounter.human}`
       document.getElementById('humanCount').innerHTML = human.count;
       if(human.count>=10000000 && !human.cp){
-        console.log("here")
         human.cp = true;
-        enableElement('timeLeft')
-        // TODO: activate health bar
-        // TODO: activate advance technology
+        document.getElementById('healthBar').style.visibility = 'visible'
+        enableElement('advTech');
+        enableElement('techCost');
       }
     }
   }
@@ -274,6 +273,9 @@ document.getElementById("cheat").addEventListener(
     atmosphereBool = true;
     document.getElementById('memo').innerHTML += `</br>Atmosphere Created`;
     document.getElementById('formAtmosphere').disabled = true;
+    // human.cp = true
+    // document.getElementById('healthBar').style.visibility = 'visible'
+    // enableElement('healthBar')
   }
 );
 
@@ -313,6 +315,7 @@ setInterval(() => {
     resource.increase();
   }
   if(clickCounter.human>1){
+    // chance it on whether there are more deaths or births
     if(human.count<=5 || Math.floor(Math.random()*4)>=1){
       human.count++;
     } else {
@@ -321,17 +324,9 @@ setInterval(() => {
     document.getElementById('humanCount').innerHTML = human.count;
   }
   if(human.cp){
-    if(timer.secs==0 && timer.mins==0){
-      console.log("timer finished")
-    } else {
-      if(timer.secs-1==-1){
-        timer.secs=59;
-        timer.mins--;
-      } else {
-        timer.secs--;
-      }
+    document.getElementById('healthBar').style.width = `${parseInt(document.getElementById('healthBar').style.width)-1}pt`
+    if(document.getElementById('healthBar').style.width=="0pt"){
+      console.log("finished");
     }
-    document.getElementById('timeLeft').innerHTML = `${timer.mins} mins, ${timer.secs} secs`
   }
-    // chance it on whether there are more deaths or births
 }, 1000);

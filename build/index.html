@@ -4,6 +4,7 @@
 <head>
   <meta charset="utf-8">
   <title>JSnUProject</title>
+  <link rel="stylesheet" href="index.css">
 </head>
 
 <body>
@@ -11,7 +12,6 @@
   <!-- <button id="save">SAVE</button> -->
   <div class="energy">
     <button id="collectEnergy">Collect Energy</button> &nbsp;
-    <button id="energyProduction+" style="display: none">Increase Energy Production</button> &nbsp;
     <label id="energyCount">0</label>
   </div>
   <div class="planetDiv">
@@ -49,9 +49,7 @@
     <button id="advTech" style="display: none">Advance Technology</button>
     <label id="techCost" style="display: none"> </label>
   </div>
-  <div class="healthBar">
-    <label id="timeLeft" style="display: none">5 mins, 00 secs</label>
-  </div>
+  <div id="healthBar" style="width: 100pt; visibility: hidden;"></div>
 <!-- humans have taken over the planet and the planet has satrted to die
 you need to hurry up and collect resources to advance technology to get as many
 people off of the planet as possible-->
