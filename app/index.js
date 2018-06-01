@@ -40,12 +40,11 @@ let clickCounter = {
   "resource": 0,
   "human": 0
 }
-const humanCost = 20;
+let human = {"count": 2, "cost": 20, "harvested": 0, "cp": false}
 let energy = new Currency("energyCount", "J", 0, 1, 1);
 let resource = new Currency("resourceCount", "N", 0, 1, 1);
 let resourceCost = 10;
-let humanCount = 2;
-
+let timer = {"mins": 5, "secs": 0}
 
 // NOTE: onload
 // window.onload = () => {
@@ -193,19 +192,23 @@ document.getElementById("addResource").addEventListener(
 // NOTE: HUMANS
 document.getElementById("createHuman").addEventListener(
   'click', () => {
-    if (resource.decrease(humanCost * clickCounter.human)) {
+    if (resource.decrease(human.cost * clickCounter.human)) {
       clickCounter.human++;
       if (clickCounter.human == 1) {
         document.getElementById('memo').innerHTML += "</br>THE FIRST HUMANS HAVE ARRIVED FROM ANOTHER PLANET AND THEIR SHIP CRASHES AND THEY ARE LEFT WITH NOTHING BUT THEMSLEVES"
         enableElement('humanCount');
         enableElement('harvest');
+        enableElement('harvested');
         // you can only harvest as many resources as you have humans
       } else {
-        humanCount = Math.ceil(humanCount*1.5);
+        human.count = Math.ceil(human.count**1.5);
       }
-      document.getElementById('humanCost').innerHTML = `${humanCost * clickCounter.human}`
-      document.getElementById('humanCount').innerHTML = humanCount;
-      if(humanCount>=1000){
+      document.getElementById('humanCost').innerHTML = `${human.cost * clickCounter.human}`
+      document.getElementById('humanCount').innerHTML = human.count;
+      if(human.count>=10000000 && !human.cp){
+        console.log("here")
+        human.cp = true;
+        enableElement('timeLeft')
         // TODO: activate health bar
         // TODO: activate advance technology
       }
@@ -216,7 +219,15 @@ document.getElementById("createHuman").addEventListener(
 // NOTE: HARVEST
 document.getElementById('harvest').addEventListener(
   'click', ()=> {
-    
+    if(resource.count-human.count>=0){
+      human.harvested += human.count;
+      resource.count -= human.count;
+    } else {
+      human.harvested += resource.count;
+      resource.count = 0;
+    }
+    document.getElementById('harvested').innerHTML = human.harvested;
+    document.getElementById('resourceCount').innerHTML = resource.count;
   }
 )
 
@@ -226,7 +237,11 @@ document.getElementById('advTech').addEventListener(
 
   }
 )
-// wheel,
+// fire, wheel, nails, compass, paper, gunpowder, electricity,
+// steam engine, combustion engine, telephone, car, airplane,
+// rockets, nuclear fission, computers, the internet,
+// the first space exploration to space is launched
+// it finds a habitable planet
 
 // NOTE: CHEAT
 document.getElementById("cheat").addEventListener(
@@ -298,12 +313,25 @@ setInterval(() => {
     resource.increase();
   }
   if(clickCounter.human>1){
-    if(humanCount<=5 || Math.floor(Math.random()*4)>=1){
-      humanCount++;
+    if(human.count<=5 || Math.floor(Math.random()*4)>=1){
+      human.count++;
     } else {
-      humanCount--;
+      human.count--;
     }
-    document.getElementById('humanCount').innerHTML = humanCount;
+    document.getElementById('humanCount').innerHTML = human.count;
+  }
+  if(human.cp){
+    if(timer.secs==0 && timer.mins==0){
+      console.log("timer finished")
+    } else {
+      if(timer.secs-1==-1){
+        timer.secs=59;
+        timer.mins--;
+      } else {
+        timer.secs--;
+      }
+    }
+    document.getElementById('timeLeft').innerHTML = `${timer.mins} mins, ${timer.secs} secs`
   }
     // chance it on whether there are more deaths or births
 }, 1000);

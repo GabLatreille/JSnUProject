@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/GabLatreille/JSnUProject#readme",
   "dependencies": {
-    "npm": "^6.0.1"
+    "npm": "^6.1.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
